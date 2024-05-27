@@ -23,11 +23,13 @@
         <ul class="side-menu">
             <li><a href="./"><i class='bi bi-speedometer2'></i>Dashboard</a></li>
             <li class="active"><a href="#"><i class='bi bi-newspaper'></i>News</a></li>
-            <li><a href="#"><i class='bi bi-gear'></i>Settings</a></li>
+            <li><a href="visit.php"><i class='bi bi-eye-fill'></i>Visits</a></li>
+
+            <!-- <li><a href="#"><i class='bi bi-gear'></i>Settings</a></li> -->
         </ul>
         <ul class="side-menu">
             <li>
-                <a href="#" class="logout">
+                <a href="php/logout.php" class="logout">
                     <i class='bi bi-door-open'></i>
                     Logout
                 </a>
@@ -63,7 +65,7 @@
                     <h1>News Center</h1>
 
                 </div>
-                <a href="javascript:void(0)" onclick="form_display()" class="report">
+                <a href="javascript:void(0)" onclick="form_display('add')" class="report">
                     <i class='bi bi-plus-circle'></i>
                     <span>New Story</span>
                 </a>
@@ -125,7 +127,7 @@
                                                 echo $date[0];
                                                 ?>
                                             </td>
-                                            <td><a href="php/update.php?id=<?php echo $row['id']; ?>"><i class="bi bi-pencil-square"></i></a></td>
+                                            <td><a href="javascript:void(0)" onclick="form_display('update', '<?php echo $row['id']; ?>');"><i class="bi bi-pencil-square"></i></a></td>
                                             <td><a href="php/archive.php?id=<?php echo $row['id']; ?>" onclick="return confirm('Notice!\n\nThis operation will make the story not visible for the visitors, Do you want to continue?')"><i class="bi bi-archive"></i></a></td>
                                         </tr>
                             <?php }
@@ -146,45 +148,27 @@
     <div class="modal-container" style="display: none;">
         <!-- <div class="modal-container"> -->
         <div class="modal">
-            <h2>New Story</h2>
-            <form action="php/new_story.php" method="POST" enctype="multipart/form-data">
-                <div class="input-container">
-                    <center>
-                        <img src="images/profile-1.jpg" alt="dummy" class="preview" id="profilePreview">
-                        <br>
-                        <button type="button" onclick="document.querySelector('#fileUp').click()">Upload</button>
-                    </center>
-                    <input type="file" name="img" id="fileUp" hidden>
-                </div>
-                <div class="comb-2">
-                    <div class="input-container">
-                        <label>Title</label>
-                        <input type="text" name="title">
-                    </div>
-                    <div class="input-container">
-                        <label>Category</label>
-                        <select name="category">
-                            <option value="Social">Social</option>
-                            <option value="Entertainment">Entertainment</option>
-                            <option value="Sport">Sport</option>
-                            <option value="Education">Education</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-container"><label>Express Your mind: </label><textarea name="story"></textarea></div>
 
-                <input type="submit" value="Post" name="submit">
-            </form>
         </div>
     </div>
 
     <script src="index.js"></script>
     <script src="view.js"></script>
     <script>
-        function form_display() {
+        function form_display(cont, id) {
             modal_container.style.display = "";
+            modal.innerHTML = '<div class="loading"></div>';
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                const res = this.response;
+                modal.innerHTML = res;
+            }
+            xhttp.open('GET', `php/op.php?cont=${cont}&id=${id}`);
+            xhttp.send();
         }
-        document.getElementById("fileUp").addEventListener("change", function(event) {
+
+        function upd(event) {
+            console.log("mellw");
             var file = event.target.files[0];
             var reader = new FileReader();
 
@@ -194,7 +178,7 @@
             }
 
             reader.readAsDataURL(file);
-        });
+        };
     </script>
 </body>
 
